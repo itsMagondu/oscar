@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 
+from django.core.urlresolvers import reverse_lazy
+
 from oscar import OSCAR_MAIN_TEMPLATE_DIR
 from oscar import get_core_apps
 from oscar.defaults import *
@@ -46,6 +48,22 @@ INSTALLED_APPS = [
 
     'compressor',
     'widget_tweaks',
+    
+    'taggit',
+    'modelcluster',
+    
+    'wagtail.wagtailcore',
+    'wagtail.wagtailadmin',
+    'wagtail.wagtailsearch',
+    'wagtail.wagtailimages',
+    'wagtail.wagtaildocs',
+    'wagtail.wagtailsnippets',
+    'wagtail.wagtailusers',
+    'wagtail.wagtailsites',
+    'wagtail.wagtailembeds',
+    'wagtail.wagtailredirects',
+    'wagtail.wagtailforms',
+
 ] + get_core_apps()
 
 SITE_ID = 1
@@ -62,6 +80,10 @@ MIDDLEWARE_CLASSES = (
 
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
     'oscar.apps.basket.middleware.BasketMiddleware',
+    
+    'wagtail.wagtailcore.middleware.SiteMiddleware',
+    'wagtail.wagtailredirects.middleware.RedirectMiddleware',
+
 )
 
 ROOT_URLCONF = 'asm.urls'
@@ -71,7 +93,7 @@ TEMPLATES = [
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
             os.path.join(PROJECT_DIR, 'templates'),
-            OSCAR_MAIN_TEMPLATE_DIR
+            OSCAR_MAIN_TEMPLATE_DIR,
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -141,13 +163,15 @@ HAYSTACK_CONNECTIONS = {
 
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
+    os.path.join(PROJECT_DIR, 'static'),
 )
 
-STATIC_ROOT = os.path.join(PROJECT_DIR, 'static')
+STATIC_ROOT = os.path.join(PROJECT_DIR, 'asm/static')
 STATIC_URL = '/static/'
 
 MEDIA_ROOT = os.path.join(PROJECT_DIR, 'media')
 MEDIA_URL = '/media/'
+
 
 OSCAR_INITIAL_ORDER_STATUS = 'Pending'
 OSCAR_INITIAL_LINE_STATUS = 'Pending'
@@ -156,3 +180,9 @@ OSCAR_ORDER_STATUS_PIPELINE = {
     'Being processed': ('Processed', 'Cancelled',),
     'Cancelled': (),
 }
+
+WAGTAIL_SITE_NAME = 'Oscar'
+
+OSCAR_HOMEPAGE=reverse_lazy('homepage')
+
+#print OSCAR_HOMEPAGE
